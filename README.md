@@ -9,3 +9,5 @@ TDL — ToDoList 使用 Python Flask 框架开发的一个中文版待做事项�
 - 服务端
 - Web 客户端
 - 命令行
+
+通过 python run_tdl.py 启动应用，web 页面访问 [http://localhost:9468](http://localhost:9468)。

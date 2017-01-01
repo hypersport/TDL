@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Log In</title>
-    <script src="../static/js/jquery-3.1.1.min.js"></script>
-    <script type="text/javascript">
-        {% for msg in get_flashed_messages() %}
-            alert('{{ msg }}');
-        {% endfor %}
-    </script>
+{#    <script type="text/javascript">#}
+{#        {% for msg in get_flashed_messages() %}#}
+{#            alert('{{ msg }}');#}
+{#        {% endfor %}#}
+{#    </script>#}
 </head>
 <body>
 <h1 align="center" style="font-weight:bold; font-style:italic; font-size: 55px;">Log In</h1>
-<form action="" method="post">
+<form action="/" method="post">
     <div align="center">
         <input type="text" name="username">
         <input type="password" name="password">
