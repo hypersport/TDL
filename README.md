@@ -12,6 +12,17 @@ TDL — ToDoList 使用 Python Flask 框架开发的一个中文版待做事项�
 
 通过 python run_tdl.py 启动应用，web 页面访问 [http://localhost:9468](http://localhost:9468)。
 
-第一个启动应用时会创建 $HOME/.tdl/ 目录，该目录包括两个文件:
-- tdl.json 是应用的选择配置文件，可修改 default 的值，默认的 default 为 development ，另外还可选择 production
+第一个启动应用时会创建 $HOME/.tdl/ 目录，该目录包括三个文件:
+- README 是说明文件
+- tdl.json 是应用的选择配置文件
+    ```
+    {
+    "config_type": "default",
+    "host": "localhost",
+    "port": 9468
+    }
+    ```
+    - 修改 config_type 的值，默认的 default 为 development ，还可选择 production ;
+    - 修改 host 的值;
+    - 修改端口 port 的值
 - tdl.db 是应用的 SQLite 数据库文件。
