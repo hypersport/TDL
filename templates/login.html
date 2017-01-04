@@ -1,22 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Log In</title>
-{#    <script type="text/javascript">#}
-{#        {% for msg in get_flashed_messages() %}#}
-{#            alert('{{ msg }}');#}
-{#        {% endfor %}#}
-{#    </script>#}
+    <link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="css/styles.css") }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="css/bootstrap.css") }}">
+    <script type="text/javascript">
+        {% for msg in get_flashed_messages() %}
+            alert('{{ msg }}');
+        {% endfor %}
+    </script>
 </head>
 <body>
-<h1 align="center" style="font-weight:bold; font-style:italic; font-size: 55px;">Log In</h1>
-<form action="/" method="post">
-    <div align="center">
-        <input type="text" name="username">
-        <input type="password" name="password">
-        <input type="submit" value="submit">
-    </div>
-</form>
+<div class="page-header">
+    <h1 align="center" style="font-weight:bold; font-style:italic; font-size: 55px;">Log In</h1>
+</div>
+<div class="col-md-4">
+    <form method="post" action="{{ url_for("main.login") }}">
+    用户名<br>
+    {{ form.username }}<br>
+    密码<br>
+    {{ form.password }}<br>
+    {{ form.remember_me }} 记住我<br>
+    {{ form.submit }}
+    </form>
+</div>
 </body>
 </html>
