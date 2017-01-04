@@ -46,4 +46,4 @@ crashlytics.properties
 crashlytics-build.properties
 
 # pyc files
-.pyc
+*.pyc
