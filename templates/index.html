@@ -3,6 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>TDL</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="css/styles.css") }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="css/bootstrap.css") }}">
+    <script type="text/javascript">
+        {% for msg in get_flashed_messages() %}
+            alert('{{ msg }}');
+        {% endfor %}
+    </script>
 </head>
 <body>
 INDEX
