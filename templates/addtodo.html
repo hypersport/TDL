@@ -3,18 +3,22 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>用户登录</title>
+    <title>ToDo</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="css/styles.css") }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="css/bootstrap.css") }}">
-    <script type="text/javascript">
-        {% for msg in get_flashed_messages() %}
-            alert('{{ msg }}');
-        {% endfor %}
-    </script>
+{#    <script type="text/javascript">#}
+{#        {% for error in form.password.errors %}#}
+{#            alert("{{ error }}");#}
+{#        {% endfor %}#}
+{##}
+{#        {% for error in form.username.errors %}#}
+{#            alert("{{ error }}");#}
+{#        {% endfor %}#}
+{#    </script>#}
 </head>
 <body>
 <div class="page-header">
-    <h1>用户登录</h1>
+    <h1>添加用户</h1>
 </div>
 <div class="col-md-4">
     {{ wtf.quick_form(form) }}

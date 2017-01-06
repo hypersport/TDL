@@ -1,6 +1,6 @@
 # coding=utf-8
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, SubmitField, StringField, BooleanField, ValidationError
+from wtforms import PasswordField, SubmitField, StringField, BooleanField, ValidationError, TextAreaField
 from wtforms.validators import DataRequired, Length, EqualTo, Regexp
 from .models import Users
 
@@ -21,8 +21,14 @@ class AddUserForm(FlaskForm):
         DataRequired(message='用户名不能为空'), Length(1, 64), Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0, '用户名只能由字母，数字，小数点和下划线组成')])
     password = PasswordField('密码', validators=[DataRequired(message='密码不能为空'), EqualTo('password2', message='密码不一致')])
     password2 = PasswordField('确认密码', validators=[DataRequired()])
+    is_administrator = BooleanField('是否设为管理员')
     submit = SubmitField('添加')
 
     def validate_username(self, field):
         if Users.query.filter_by(username=field.data).first():
             raise ValidationError('用户名已存在')
+
+
+class ToDoForm(FlaskForm):
+    todo_content = TextAreaField('ToDo内容')
+    submit = SubmitField('确认')

@@ -1,7 +1,7 @@
 # coding=utf-8
 from flask import Flask
 from config import config
-from views import main, db, login_manager
+from views import main, db, login_manager, bootstrap
 import os
 import json
 
@@ -50,6 +50,7 @@ else:
 
 app = Flask(__name__)
 app.config.from_object(config[config_type])
+bootstrap.init_app(app)
 db.init_app(app)
 login_manager.init_app(app)
 app.register_blueprint(main)
