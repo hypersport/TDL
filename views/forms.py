@@ -31,4 +31,5 @@ class AddUserForm(FlaskForm):
 
 class ToDoForm(FlaskForm):
     todo_content = TextAreaField('ToDo内容')
+    cancel = SubmitField('取消')
     submit = SubmitField('确认')

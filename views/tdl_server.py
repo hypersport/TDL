@@ -24,7 +24,9 @@ def page_not_found(e):
 @main.route('/', methods=['POST', 'GET'])
 @login_required
 def index():
-    return render_template('index.html')
+    todos = ToDoList.query.filter_by(
+        owner_id=current_user.id, is_deleted=False).all()
+    return render_template('index.html', todos=todos)
 
 
 @main.route('/api')
@@ -40,7 +42,7 @@ def login():
         if user and user.verify_password(form.password.data):
             login_user(user, form.remember_me.data)
             flash('登陆成功')
-            return redirect(request.args.get('next') or url_for('main.index'))
+            return redirect(request.args.get('next') if request.args.get('next') != '/logout' else '/')
         flash('登录失败')
     return render_template('login.html', form=form)
 
@@ -58,10 +60,12 @@ def logout():
 def add_todo():
     form = ToDoForm()
     if form.validate_on_submit():
+        if form.cancel.data:
+            return redirect(url_for('main.index'))
         todo = ToDoList(content=form.todo_content.data,
                         owner_id=current_user.id)
         db.session.add(todo)
-        return redirect(request.args.get('next') or url_for('main.index'))
+        return redirect(url_for('main.index'))
     return render_template('addtodo.html', form=form)
 
 
@@ -77,5 +81,5 @@ def add_user():
                      is_administrator=form.is_administrator.data)
         db.session.add(user)
         flash('添加成功')
-        return redirect(request.args.get('next') or url_for('main.login'))
+        return redirect(url_for('main.login'))
     return render_template('adduser.html', form=form)
