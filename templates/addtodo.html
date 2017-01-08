@@ -4,19 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <title>ToDo</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="css/styles.css") }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="css/bootstrap.css") }}">
-{#    <script type="text/javascript">#}
-{#        {% for error in form.password.errors %}#}
-{#            alert("{{ error }}");#}
-{#        {% endfor %}#}
-{##}
-{#        {% for error in form.username.errors %}#}
-{#            alert("{{ error }}");#}
-{#        {% endfor %}#}
-{#    </script>#}
+    <script src="{{ url_for("static", filename="js/jquery-3.1.1.min.js") }}"></script>
+    <script type="text/javascript">
+        function close_msg() {
+            $(".container").hide();
+        }
+    </script>
 </head>
 <body>
+<div class="container">
+    {% for msg in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" onclick="close_msg()">&times;</button>
+        {{ msg }}
+    </div>
+    {% endfor %}
+</div>
 <div class="page-header">
     <h1>添加用户</h1>
 </div>

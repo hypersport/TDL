@@ -3,15 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <title>TDL</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="css/styles.css") }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="css/bootstrap.css") }}">
+    <script src="{{ url_for("static", filename="js/jquery-3.1.1.min.js") }}"></script>
     <script type="text/javascript">
-        {% for msg in get_flashed_messages() %}
-            alert('{{ msg }}');
-        {% endfor %}
+        function close_msg() {
+            $(".container").hide();
+        }
     </script>
+    <style type="text/css">
+        td {
+            padding:6px 12px;
+        }
+    </style>
 </head>
 <body>
-INDEX
+<div class="container">
+    {% for msg in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" onclick="close_msg()">&times;</button>
+        {{ msg }}
+    </div>
+    {% endfor %}
+</div>
+<div class="page-header">
+    <h1>To Do List</h1>
+</div>
+<div>
+{% if not todos %}
+    <h3>Nothing Todo !</h3>
+    {% else %}
+    <table style="border-spacing: 1px; border-collapse: inherit;">
+        <tr bgcolor="#6495ed">
+            <td>序号</td>
+            <td>创建日期</td>
+            <td>修改日期</td>
+            <td>TODO内容</td>
+            <td>是否完成</td>
+        </tr>
+        {% for todo in todos %}
+            {% if todo.is_done %}
+            <tr bgcolor="#adff2f">
+            {% else %}
+            <tr bgcolor="red">
+            {% endif %}
+                <td>{{ loop.index }}</td>
+                <td>{{ todo.created_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ todo.updated_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ todo.content }}</td>
+                {% if todo.done %}
+                    <td>已完成</td>
+                {% else %}
+                    <td>未完成</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    {% endif %}
+</table>
+</div>
 </body>
 </html>
