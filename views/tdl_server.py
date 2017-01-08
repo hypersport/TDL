@@ -24,9 +24,10 @@ def page_not_found(e):
 @main.route('/', methods=['POST', 'GET'])
 @login_required
 def index():
+    search_tag = request.form.get('search_tag', '')
     todos = ToDoList.query.filter_by(
-        owner_id=current_user.id, is_deleted=False).all()
-    return render_template('index.html', todos=todos)
+        owner_id=current_user.id, is_deleted=False).filter(ToDoList.content.like('%' + search_tag + '%')).all()
+    return render_template('index.html', todos=todos, search_tag=search_tag)
 
 
 @main.route('/api')
@@ -83,3 +84,29 @@ def add_user():
         flash('添加成功')
         return redirect(url_for('main.login'))
     return render_template('adduser.html', form=form)
+
+
+@main.route('/chstatus', methods=['POST', 'GET'])
+@login_required
+def ch_status():
+    todo_id = request.args.get('todo_id', 0)
+    if todo_id:
+        todo = ToDoList.query.filter_by(id=todo_id).first()
+        todo.is_done = False if todo.is_done else True
+    else:
+        flash('对应的任务不存在或已经被删除')
+        return redirect(url_for('main.index'))
+    return ''
+
+
+@main.route('/deltodo', methods=['POST', 'GET'])
+@login_required
+def del_todo():
+    todo_id = request.args.get('todo_id', 0)
+    if todo_id:
+        todo = ToDoList.query.filter_by(id=todo_id).first()
+        todo.is_deleted = True
+    else:
+        flash('对应的任务不存在或已经被删除')
+        return redirect(url_for('main.index'))
+    return ''
