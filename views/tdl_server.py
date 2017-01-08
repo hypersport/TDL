@@ -56,18 +56,25 @@ def logout():
     return redirect(url_for('main.index'))
 
 
-@main.route('/addtodo', methods=['POST', 'GET'])
+@main.route('/addoredit/<int:todo_id>', methods=['POST', 'GET'])
 @login_required
-def add_todo():
+def add_or_edit(todo_id):
     form = ToDoForm()
     if form.validate_on_submit():
         if form.cancel.data:
             return redirect(url_for('main.index'))
-        todo = ToDoList(content=form.todo_content.data,
-                        owner_id=current_user.id)
-        db.session.add(todo)
+        if todo_id:
+            todo = ToDoList.query.get_or_404(todo_id)
+            todo.content = form.todo_content.data
+        else:
+            todo = ToDoList(content=form.todo_content.data,
+                            owner_id=current_user.id)
+            db.session.add(todo)
         return redirect(url_for('main.index'))
-    return render_template('addtodo.html', form=form)
+    if todo_id:
+        todo = ToDoList.query.get_or_404(todo_id)
+        form.todo_content.data = todo.content
+    return render_template('addoredit.html', form=form)
 
 
 @main.route('/adduser', methods=['POST', 'GET'])
@@ -90,12 +97,10 @@ def add_user():
 @login_required
 def ch_status():
     todo_id = request.args.get('todo_id', 0)
-    if todo_id:
-        todo = ToDoList.query.filter_by(id=todo_id).first()
-        todo.is_done = False if todo.is_done else True
-    else:
-        flash('对应的任务不存在或已经被删除')
-        return redirect(url_for('main.index'))
+    todo = ToDoList.query.get_or_404(todo_id)
+    if todo.owner_id != current_user.id:
+        abort(403)
+    todo.is_done = False if todo.is_done else True
     return ''
 
 
@@ -103,10 +108,8 @@ def ch_status():
 @login_required
 def del_todo():
     todo_id = request.args.get('todo_id', 0)
-    if todo_id:
-        todo = ToDoList.query.filter_by(id=todo_id).first()
-        todo.is_deleted = True
-    else:
-        flash('对应的任务不存在或已经被删除')
-        return redirect(url_for('main.index'))
+    todo = ToDoList.query.get_or_404(todo_id)
+    if todo.owner_id != current_user.id:
+        abort(403)
+    todo.is_deleted = True
     return ''
