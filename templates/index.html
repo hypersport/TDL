@@ -1,94 +1,91 @@
-{% import "bootstrap/wtf.html" as wtf %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>TDL</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="css/bootstrap.css") }}">
-    <script src="{{ url_for("static", filename="js/jquery-3.1.1.min.js") }}"></script>
-    <script type="text/javascript">
-        function closeMsg() {
-            $(".container").hide();
-        }
-
-        function chStatus(todo_id) {
-            $.post("/chstatus?todo_id=" + todo_id);
-            window.location.reload();
-        }
-
-        function deleteTodo(todo_id) {
-            $.post("/deltodo?todo_id=" + todo_id);
-            window.location.reload();
-        }
-    </script>
+{% extends "base.html" %}
+{% block title %}TDL{% endblock %}
+{% block head %}
+    {{ super() }}
     <style type="text/css">
         td {
             padding: 6px 12px;
         }
     </style>
-</head>
-<body>
-<div class="container">
-    {% for msg in get_flashed_messages() %}
-        <div class="alert alert-warning">
-            <button type="button" class="close" onclick="closeMsg()">&times;</button>
-            {{ msg }}
-        </div>
-    {% endfor %}
-</div>
-<div class="page-header">
-    <h1>To Do List</h1>
-</div>
-<div>
-    <form action="/" method="post">
-        <input id="csrf_token" name="csrf_token" type="hidden"
-               value="1483865393##ab936c1689a522168edb31e291efbe8482b76eb7">
-        <div class="form-group">
-            <input class="form-control" id="search_tag" style="width: 33%; display: inline;" name="search_tag"
-                   type="text" value="{{ search_tag }}">
-            <input class="btn btn-default" id="submit" name="submit" type="submit" value="搜索">
-            <input class="btn btn-default"  value="添加" type="button"
-                   onclick="window.location.href='{{ url_for('main.add_or_edit', todo_id=0) }}'">
-        </div>
-    </form>
-    {% if not todos %}
-        <h3>Nothing Todo !</h3>
-    {% else %}
-        <table style="border-spacing: 1px; border-collapse: inherit;">
-        <tr bgcolor="#6495ed">
-            <td>序号</td>
-            <td>创建日期</td>
-            <td>修改日期</td>
-            <td>TODO内容</td>
-            <td>是否完成</td>
-            <td>修改状态</td>
-            <td>修改内容</td>
-            <td>是否删除</td>
-        </tr>
-        {% for todo in todos %}
-            {% if todo.is_done %}
-                <tr bgcolor="#adff2f">
-                    {% else %}
-                <tr bgcolor="red">
-            {% endif %}
-        <td>{{ loop.index }}</td>
-        <td>{{ todo.created_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-        <td>{{ todo.updated_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-        <td>{{ todo.content }}</td>
-        {% if todo.is_done %}
-            <td>已完成</td>
-            <td><input style="border: 0" value="未完成" type="submit" onclick="chStatus({{ todo.id }})"></td>
-        {% else %}
-            <td>未完成</td>
-            <td><input style="border: 0" value="已完成" type="submit" onclick="chStatus({{ todo.id }})"></td>
-        {% endif %}
-        <td><input style="border: 0;" type="submit" value="修改"
-                   onclick="window.location.href='{{ url_for('main.add_or_edit', todo_id=todo.id) }}'"></td>
-        <td><input style="border: 0" value="删除" type="submit" onclick="deleteTodo({{ todo.id }})"></td>
-        </tr>
+{% endblock %}
+{% block body %}
+    <div class="container">
+        {% for msg in get_flashed_messages() %}
+            <div class="alert alert-warning">
+                <button type="button" class="close" onclick="closeMsg()">&times;</button>
+                {{ msg }}
+            </div>
         {% endfor %}
+    </div>
+    <div class="page-header">
+        <h1 style="margin-left: 15px;">To Do List</h1>
+    </div>
+    <div style="margin-left: 15px;">
+        <form action="/" method="post">
+            <input id="csrf_token" name="csrf_token" type="hidden"
+                   value="1483865393##ab936c1689a522168edb31e291efbe8482b76eb7">
+            <div class="form-group">
+                {% if todos %}
+                    <input class="form-control" id="search_tag" style="width: 33%; display: inline;" name="search_tag"
+                           type="text" value="{{ search_tag }}">
+                    <input class="btn btn-default" id="submit" name="submit" type="submit" value="搜索">
+                {% endif %}
+                <input class="btn btn-default" value="添加" type="button"
+                       onclick="window.location.href='{{ url_for('main.add_or_edit', todo_id=0) }}'">
+                <input class="btn btn-default" type="button"
+                       onclick="window.location.href='{{ url_for('main.logout') }}'"
+                       value="退出">
+                <input class="btn btn-default" type="button"
+                       onclick="window.location.href='{{ url_for('main.ch_passwd') }}'"
+                       value="修改密码">
+            </div>
+        </form>
+        {% if not todos %}
+            <h3>Nothing Todo !</h3>
+        {% else %}
+            <table style="border-spacing: 1px; border-collapse: inherit; margin-bottom: 15px;">
+            <tr bgcolor="#6495ed">
+                <td>序号</td>
+                <td>创建日期</td>
+                <td>修改日期</td>
+                <td>TODO内容</td>
+                <td>是否完成</td>
+                <td>修改状态</td>
+                <td>修改内容</td>
+                <td>是否删除</td>
+            </tr>
+            {% for todo in todos %}
+                {% if todo.is_done %}
+                    <tr bgcolor="#adff2f">
+                        {% else %}
+                    <tr bgcolor="red">
+                {% endif %}
+            <td>{{ loop.index }}</td>
+            <td>{{ todo.created_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>{{ todo.updated_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>{{ todo.content }}</td>
+            {% if todo.is_done %}
+                <td>已完成</td>
+                <td><input style="border: 0" value="未完成" type="submit" onclick="chStatus({{ todo.id }})"></td>
+            {% else %}
+                <td>未完成</td>
+                <td><input style="border: 0" value="已完成" type="submit" onclick="chStatus({{ todo.id }})"></td>
+            {% endif %}
+            <td><input style="border: 0;" type="submit" value="修改"
+                       onclick="window.location.href='{{ url_for('main.add_or_edit', todo_id=todo.id) }}'"></td>
+            <td><input style="border: 0" value="删除" type="submit" onclick="delTodo({{ todo.id }})"></td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+        </table>
+    </div>
+    {% if current_user.is_administrator %}
+        <div class="col-md-4">
+            <input class="btn btn-default" type="button" value="添加用户"
+                   onclick="window.location.href='{{ url_for('main.add_user') }}'">
+            <input class="btn btn-default" type="button" value="删除用户"
+                   onclick="window.location.href='{{ url_for('main.all_users') }}'">
+        </div>
     {% endif %}
-    </table>
-</div>
-</body>
+{% endblock %}
 </html>
