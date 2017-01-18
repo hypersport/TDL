@@ -22,7 +22,7 @@ class ToDoList(db.Model):
         self.is_deleted = is_deleted
 
     def __repr__(self):
-        return '{}, {}, {}, {}, {}, {}, {}'.format(
+        return '{}, {}, {}, {}, {}, {}, {}, {}'.format(
             self.id,
             self.content,
             self.created_time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -37,8 +37,10 @@ class Users(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True)
+    added_time = db.Column(db.DateTime, default=datetime.now())
     password_hash = db.Column(db.String(128), nullable=False)
     is_administrator = db.Column(db.Boolean, default=False)
+    is_deleted = db.Column(db.Boolean, default=False)
 
     def __init__(self, username, password, is_administrator=False):
         self.username = username
@@ -57,7 +59,8 @@ class Users(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def __repr__(self):
-        return '{self.username}, {self.is_administrator}'.format(self=self)
+        return '{}, {}, {}, {}'.format(self.id, self.username, self.added_time.strftime('%Y-%m-%d %H:%M:%S'),
+                                       self.is_administrator)
 
 
 @login_manager.user_loader

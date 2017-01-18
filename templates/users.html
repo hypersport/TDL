@@ -1,0 +1,76 @@
+{% import "chwtf.html" as wtf %}
+{% extends "base.html" %}
+{% block title %}TDL{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style type="text/css">
+        td {
+            padding: 6px 12px;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <div class="container">
+        {% for msg in get_flashed_messages() %}
+            <div class="alert alert-warning">
+                <button type="button" class="close" onclick="closeMsg()">&times;</button>
+                {{ msg }}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="page-header">
+        <h1 style="margin-left: 15px;">所有用户</h1>
+    </div>
+    <div style="margin-left: 15px;">
+        <table style="border-spacing: 1px; border-collapse: inherit; margin-bottom: 15px;">
+            <tr bgcolor="#6495ed">
+                <td>用户ID</td>
+                <td>用户名</td>
+                <td>添加日期</td>
+                <td>是否管理员</td>
+                <td>修改权限</td>
+                <td>状态</td>
+            </tr>
+            {% for user in users %}
+                {% if user.id == 1 %}
+                    <tr bgcolor="#ffd700">
+                        {% elif user.is_administrator %}
+                    <tr bgcolor="#adff2f">
+                        {% else %}
+                    <tr bgcolor="#ff7f50">
+                {% endif %}
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.added_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            {% if user.is_administrator %}
+                <td><p align="center" style="margin: 0;">是</p></td>
+                <td>
+                    {% if user.id == 1 %}
+                        <p align="center" style="margin: 0;">超级管理员</p>
+                    {% else %}
+                        <input style="border: 0" value="撤销管理员" type="submit" onclick="chPerm({{ user.id }})">
+                    {% endif %}
+                </td>
+            {% else %}
+                <td><p align="center" style="margin: 0;">不是</p></td>
+                <td><input style="border: 0" value="设为管理员" type="submit" onclick="chPerm({{ user.id }})"></td>
+            {% endif %}
+            <td>
+                {% if user.id == 1 %}
+                    <p style="margin: 0;">禁删</p>
+                {% elif user.is_deleted %}
+                    <input style="border: 0" value="恢复" type="submit" onclick="delResetUser({{ user.id }})">
+                {% else %}
+                    <input style="border: 0" value="删除" type="submit" onclick="delResetUser({{ user.id }})">
+                {% endif %}
+            </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-md-4">
+        <input class="btn btn-default" type="button" value="返回"
+               onclick="window.location.href='{{ url_for('main.index') }}'">
+    </div>
+{% endblock %}
+</html>
