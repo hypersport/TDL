@@ -1,6 +1,12 @@
 {% import "chwtf.html" as wtf %}
 {% extends "base.html" %}
-{% block title %}TDL{% endblock %}
+{% block title %}
+    {% if is_edit %}
+        编辑内容
+    {% else %}
+        新建 ToDo
+    {% endif %}
+{% endblock %}
 {% block head %}
     {{ super() }}
 {% endblock %}
