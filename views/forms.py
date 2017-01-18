@@ -2,7 +2,31 @@
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, SubmitField, StringField, BooleanField, ValidationError, TextAreaField
 from wtforms.validators import DataRequired, Length, EqualTo, Regexp
+from wtforms.widgets import Input
 from .models import Users
+from flask_login import current_user
+
+
+class CancelInput(Input):
+    """
+    Renders a cancel button.
+
+    The field's label is used as the text of the cancel button instead of the
+    data on the field.
+    """
+    input_type = 'button'
+
+    def __call__(self, field, **kwargs):
+        kwargs.setdefault('value', field.label.text)
+        return super(CancelInput, self).__call__(field, **kwargs)
+
+
+class CancelField(BooleanField):
+    """
+    Represents an ``<input type="button">``.  This allows checking if a given
+    cancel button has been pressed.
+    """
+    widget = CancelInput()
 
 
 class LoginForm(FlaskForm):
@@ -23,6 +47,7 @@ class AddUserForm(FlaskForm):
     password2 = PasswordField('确认密码', validators=[DataRequired()])
     is_administrator = BooleanField('是否设为管理员')
     submit = SubmitField('添加')
+    cancel = CancelField('取消')
 
     def validate_username(self, field):
         if Users.query.filter_by(username=field.data).first():
@@ -33,3 +58,15 @@ class ToDoForm(FlaskForm):
     todo_content = TextAreaField('ToDo内容')
     cancel = SubmitField('取消')
     submit = SubmitField('确认')
+
+
+class ResetPasswdForm(FlaskForm):
+    old_password = PasswordField('旧密码', validators=[DataRequired(message='密码不能为空')])
+    password = PasswordField('新密码', validators=[DataRequired(message='密码不能为空'), EqualTo('password2', message='密码不一致')])
+    password2 = PasswordField('确认密码', validators=[DataRequired()])
+    cancel = CancelField('取消')
+    submit = SubmitField('修改密码')
+
+    def validate_old_password(self, field):
+        if not current_user.verify_password(field.data):
+            raise ValidationError('密码不正确')
