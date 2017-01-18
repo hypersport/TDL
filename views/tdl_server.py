@@ -3,7 +3,8 @@ from flask import render_template, session, redirect, request, flash, url_for, a
 from . import main, db
 from models import Users, ToDoList
 from flask_login import login_required, current_user, logout_user, login_user
-from .forms import LoginForm, AddUserForm, ToDoForm
+from .forms import LoginForm, AddUserForm, ToDoForm, ResetPasswdForm
+from datetime import datetime
 
 
 @main.app_errorhandler(404)
@@ -39,11 +40,11 @@ def api():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = Users.query.filter_by(username=form.username.data).first()
+        user = Users.query.filter_by(username=form.username.data, is_deleted=False).first()
         if user and user.verify_password(form.password.data):
             login_user(user, form.remember_me.data)
             flash('登陆成功')
-            return redirect(request.args.get('next') if request.args.get('next') != '/logout' else '/')
+            return redirect(request.args.get('next', '/') if request.args.get('next') != '/logout' else '/')
         flash('登录失败')
     return render_template('login.html', form=form)
 
@@ -56,16 +57,29 @@ def logout():
     return redirect(url_for('main.index'))
 
 
+@main.route('/chpasswd', methods=['POST', 'GET'])
+@login_required
+def ch_passwd():
+    form = ResetPasswdForm()
+    if form.validate_on_submit():
+        current_user.password = form.password.data
+        flash('密码修改成功')
+        return redirect(url_for('main.index'))
+    return render_template('chpasswd.html', form=form)
+
+
 @main.route('/addoredit/<int:todo_id>', methods=['POST', 'GET'])
 @login_required
 def add_or_edit(todo_id):
     form = ToDoForm()
+    is_edit = 0
     if form.validate_on_submit():
         if form.cancel.data:
             return redirect(url_for('main.index'))
         if todo_id:
             todo = ToDoList.query.get_or_404(todo_id)
             todo.content = form.todo_content.data
+            todo.updated_time = datetime.now()
         else:
             todo = ToDoList(content=form.todo_content.data,
                             owner_id=current_user.id)
@@ -74,7 +88,8 @@ def add_or_edit(todo_id):
     if todo_id:
         todo = ToDoList.query.get_or_404(todo_id)
         form.todo_content.data = todo.content
-    return render_template('addoredit.html', form=form)
+        is_edit = 1
+    return render_template('addoredit.html', form=form, is_edit=is_edit)
 
 
 @main.route('/adduser', methods=['POST', 'GET'])
@@ -89,8 +104,39 @@ def add_user():
                      is_administrator=form.is_administrator.data)
         db.session.add(user)
         flash('添加成功')
-        return redirect(url_for('main.login'))
+        return redirect(url_for('main.index'))
     return render_template('adduser.html', form=form)
+
+
+@main.route('/users', methods=['POST', 'GET'])
+@login_required
+def all_users():
+    if not current_user.is_administrator:
+        abort(403)
+    users = Users.query.all()
+    return render_template('users.html', users=users)
+
+
+@main.route('/deluser', methods=['POST', 'GET'])
+@login_required
+def del_user():
+    if not current_user.is_administrator:
+        abort(403)
+    user_id = request.args.get('user_id', 0)
+    user = Users.query.get_or_404(user_id)
+    user.is_deleted = False if user.is_deleted else True
+    return ''
+
+
+@main.route('/chperm', methods=['POST', 'GET'])
+@login_required
+def ch_perm():
+    if not current_user.is_administrator:
+        abort(403)
+    user_id = request.args.get('user_id', 0)
+    user = Users.query.get_or_404(user_id)
+    user.is_administrator = False if user.is_administrator else True
+    return ''
 
 
 @main.route('/chstatus', methods=['POST', 'GET'])
@@ -101,6 +147,7 @@ def ch_status():
     if todo.owner_id != current_user.id:
         abort(403)
     todo.is_done = False if todo.is_done else True
+    todo.updated_time = datetime.now()
     return ''
 
 

@@ -1,31 +1,23 @@
-{% import "bootstrap/wtf.html" as wtf %}
-<!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
-<head>
-    <meta charset="UTF-8">
-    <title>添加用户</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for("static", filename="css/bootstrap.css") }}">
-    <script src="{{ url_for("static", filename="js/jquery-3.1.1.min.js") }}"></script>
-    <script type="text/javascript">
-        function close_msg() {
-            $(".container").hide();
-        }
-    </script>
-</head>
-<body>
-<div class="container">
-    {% for msg in get_flashed_messages() %}
-    <div class="alert alert-warning">
-        <button type="button" class="close" onclick="close_msg()">&times;</button>
-        {{ msg }}
+{% import "chwtf.html" as wtf %}
+{% extends "base.html" %}
+{% block title %}TDL{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+{% block body %}
+    <div class="container">
+        {% for msg in get_flashed_messages() %}
+            <div class="alert alert-warning">
+                <button type="button" class="close" onclick="closeMsg()">&times;</button>
+                {{ msg }}
+            </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
-<div class="page-header">
-    <h1>添加用户</h1>
-</div>
-<div class="col-md-4">
-    {{ wtf.quick_form(form) }}
-</div>
-</body>
+    <div class="page-header">
+        <h1 style="margin-left: 15px;">添加用户</h1>
+    </div>
+    <div class="col-md-4">
+        {{ wtf.quick_form(form) }}
+    </div>
+{% endblock %}
 </html>
