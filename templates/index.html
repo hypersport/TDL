@@ -33,11 +33,9 @@
                 <input class="btn btn-default" value="添加" type="button"
                        onclick="window.location.href='{{ url_for('main.add_or_edit', todo_id=0) }}'">
                 <input class="btn btn-default" type="button"
-                       onclick="window.location.href='{{ url_for('main.logout') }}'"
-                       value="退出">
+                       onclick="window.location.href='{{ url_for('main.logout') }}'" value="退出">
                 <input class="btn btn-default" type="button"
-                       onclick="window.location.href='{{ url_for('main.ch_passwd') }}'"
-                       value="修改密码">
+                       onclick="window.location.href='{{ url_for('main.ch_info') }}'" value="修改信息">
             </div>
         </form>
         {% if not todos %}

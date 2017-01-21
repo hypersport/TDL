@@ -60,13 +60,19 @@ class ToDoForm(FlaskForm):
     submit = SubmitField('确认')
 
 
-class ResetPasswdForm(FlaskForm):
+class ResetInfoForm(FlaskForm):
+    username = StringField('用户名', validators=[
+        DataRequired(message='用户名不能为空'), Length(1, 64), Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0, '用户名只能由字母，数字，小数点和下划线组成')])
     old_password = PasswordField('旧密码', validators=[DataRequired(message='密码不能为空')])
     password = PasswordField('新密码', validators=[DataRequired(message='密码不能为空'), EqualTo('password2', message='密码不一致')])
     password2 = PasswordField('确认密码', validators=[DataRequired()])
+    submit = SubmitField('修改信息')
     cancel = CancelField('取消')
-    submit = SubmitField('修改密码')
 
     def validate_old_password(self, field):
         if not current_user.verify_password(field.data):
             raise ValidationError('密码不正确')
+
+    def validate_username(self, field):
+        if Users.query.filter_by(username=field.data).first():
+            raise ValidationError('用户名已存在')

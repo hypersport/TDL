@@ -1,9 +1,9 @@
 # coding=utf-8
-from flask import render_template, session, redirect, request, flash, url_for, abort
+from flask import render_template, redirect, request, flash, url_for, abort
 from . import main, db
 from models import Users, ToDoList
 from flask_login import login_required, current_user, logout_user, login_user
-from .forms import LoginForm, AddUserForm, ToDoForm, ResetPasswdForm
+from .forms import LoginForm, AddUserForm, ToDoForm, ResetInfoForm
 from datetime import datetime
 
 
@@ -38,6 +38,10 @@ def api():
 
 @main.route('/login', methods=['POST', 'GET'])
 def login():
+    user = Users.query.filter_by(id=1).first()
+    if not user:
+        user = Users(username='admin', password='admin', is_administrator=True)
+        db.session.add(user)
     form = LoginForm()
     if form.validate_on_submit():
         user = Users.query.filter_by(username=form.username.data, is_deleted=False).first()
@@ -57,15 +61,16 @@ def logout():
     return redirect(url_for('main.index'))
 
 
-@main.route('/chpasswd', methods=['POST', 'GET'])
+@main.route('/chinfo', methods=['POST', 'GET'])
 @login_required
-def ch_passwd():
-    form = ResetPasswdForm()
+def ch_info():
+    form = ResetInfoForm()
     if form.validate_on_submit():
+        current_user.username = form.username.data
         current_user.password = form.password.data
         flash('密码修改成功')
         return redirect(url_for('main.index'))
-    return render_template('chpasswd.html', form=form)
+    return render_template('chinfo.html', form=form)
 
 
 @main.route('/addoredit/<int:todo_id>', methods=['POST', 'GET'])
@@ -131,9 +136,9 @@ def del_user():
 @main.route('/chperm', methods=['POST', 'GET'])
 @login_required
 def ch_perm():
-    if not current_user.is_administrator:
-        abort(403)
     user_id = request.args.get('user_id', 0)
+    if not current_user.is_administrator or user_id == 1:
+        abort(403)
     user = Users.query.get_or_404(user_id)
     user.is_administrator = False if user.is_administrator else True
     return ''

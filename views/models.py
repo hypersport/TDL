@@ -22,7 +22,7 @@ class ToDoList(db.Model):
         self.is_deleted = is_deleted
 
     def __repr__(self):
-        return '{}, {}, {}, {}, {}, {}, {}, {}'.format(
+        return '{}, {}, {}, {}, {}, {}, {}'.format(
             self.id,
             self.content,
             self.created_time.strftime('%Y-%m-%d %H:%M:%S'),
