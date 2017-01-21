@@ -8,22 +8,23 @@ except ImportError as e:
     class Fore(object):
         GREEN = ''
         RED = ''
+        RESET = ''
 
 USAGE = r'''USAGE:
     命令行执行: python tdl.py -u username -p password 进入交互环境, 输入 'q' 退出;
     命令行执行: python tdl.py -h 查看此帮助'''
 
 COMMAND = r'''
-    ls  --list all valid todos;
-    la  --list all todos;
-    ld  --list done todos;
-    lu  --list undone todos;
-    find tag  --search todo;
-    rm n  --remove nth todo;
-    do n  --mark nth todo as done;
-    ud n  --mark nth todo as undone;
-    add todo  --add a todo;
-    ed n todo  --edit nth todo.'''
+    ls          --list all valid todos;
+    la          --list all todos;
+    ld          --list done todos;
+    lu          --list undone todos;
+    find tag    --search todo;
+    rm n        --remove nth todo;
+    do n        --mark nth todo as done;
+    ud n        --mark nth todo as undone;
+    add todo    --add a todo;
+    ed n todo   --edit nth todo.'''
 
 
 def check_input():
@@ -84,12 +85,12 @@ def tdl_operation():
         elif command[:2] == 'rm' and command[3:].isdigit():
             tdl.remove(command[3:])
         elif command[:2] == 'ed' and command.split()[1].isdigit():
-            tdl.edit(command.split()[1], ' '.join(command.split()[2:]))
+            content = ' '.join(command.split()[2:])
+            tdl.edit(command.split()[1], content.strip('\''))
         elif command[:3] == 'add':
-            tdl.add(command[4:])
+            tdl.add(command[4:].strip('\''))
         else:
             print Fore.RED + '无效的命令' + Fore.RESET
-            print COMMAND
         command = raw_input('>')
 
 

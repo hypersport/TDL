@@ -5,6 +5,14 @@ from sqlalchemy.orm import sessionmaker
 from config import config
 from datetime import datetime
 
+try:
+    from colorama import Fore
+except ImportError as e:
+    class Fore(object):
+        RED = ''
+        GREEN = ''
+        RESET = ''
+
 engine = create_engine(config['default'].SQLALCHEMY_DATABASE_URI)
 Session = sessionmaker(bind=engine)
 
@@ -17,6 +25,11 @@ class Client(object):
         self.dbs = Session()
 
     def check_user(self):
+        admin = self.dbs.query(models.Users).filter_by(id=1).first()
+        if not admin:
+            admin = models.Users(username='admin', password='admin', is_administrator=True)
+            self.dbs.add(admin)
+            self.dbs.commit()
         user = self.dbs.query(models.Users).filter_by(username=self.username, is_deleted=False).first()
         if user and user.verify_password(self.password):
             self.user_id = user.id
@@ -45,36 +58,36 @@ class Client(object):
         self.dbs.commit()
 
     def edit(self, num, todo_text):
-        try:
-            todo = self.dbs.query(models.ToDoList).filter_by(id=num, owner_id=self.user_id).first()
+        todo = self.dbs.query(models.ToDoList).filter_by(id=num, owner_id=self.user_id).first()
+        if todo:
             todo.content = todo_text
             self.dbs.commit()
-        except Exception as e:
-            print '请输入正确的序号'
+        else:
+            print Fore.RED + '无效的命令' + Fore.RESET
 
     def done(self, num):
-        try:
-            todo = self.dbs.query(models.ToDoList).filter_by(id=num, owner_id=self.user_id).first()
+        todo = self.dbs.query(models.ToDoList).filter_by(id=num, owner_id=self.user_id).first()
+        if todo:
             todo.is_done = True
             self.dbs.commit()
-        except Exception as e:
-            print '请输入正确的序号'
+        else:
+            print Fore.RED + '无效的命令' + Fore.RESET
 
     def undone(self, num):
-        try:
-            todo = self.dbs.query(models.ToDoList).filter_by(id=num, owner_id=self.user_id).first()
+        todo = self.dbs.query(models.ToDoList).filter_by(id=num, owner_id=self.user_id).first()
+        if todo:
             todo.is_done = False
             self.dbs.commit()
-        except Exception as e:
-            print '请输入正确的序号'
+        else:
+            print Fore.RED + '无效的命令' + Fore.RESET
 
     def remove(self, num):
-        try:
-            todo = self.dbs.query(models.ToDoList).filter_by(id=num, owner_id=self.user_id).first()
+        todo = self.dbs.query(models.ToDoList).filter_by(id=num, owner_id=self.user_id).first()
+        if todo:
             todo.is_deleted = True
             self.dbs.commit()
-        except Exception as e:
-            print '请输入正确的序号'
+        else:
+            print Fore.RED + '无效的命令' + Fore.RESET
 
     def search(self, search_tag):
         todos = self.dbs.query(models.ToDoList).filter_by(owner_id=self.user_id, is_deleted=0).filter(

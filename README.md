@@ -54,14 +54,15 @@ TDL — ToDoList 使用 Python Flask 框架开发的一个中文版待做事项�
 - 可用命令:
 
     ```
-    ls  --list all valid todos;
-    la  --list all todos;
-    ld  --list done todos;
-    lu  --list undone todos;
-    find tag  --search todo;
-    rm n  --remove nth todo;
-    do n  --mark nth todo as done;
-    ud n  --mark nth todo as undone;
-    add todo  --add a todo;
-    ed n todo  --edit nth todo.
+    ls          --list all valid todos;
+    la          --list all todos;
+    ld          --list done todos;
+    lu          --list undone todos;
+    find tag    --search todo;
+    rm n        --remove nth todo;
+    do n        --mark nth todo as done;
+    ud n        --mark nth todo as undone;
+    add todo    --add a todo;
+    ed n todo   --edit nth todo.
     ```
+- 命令行操作是直接对 $HOME/.tdl/tdl.db 进行操作，不需要启动服务端
