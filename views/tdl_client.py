@@ -1,0 +1,82 @@
+# coding=utf-8
+from . import models
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from config import config
+from datetime import datetime
+
+engine = create_engine(config['default'].SQLALCHEMY_DATABASE_URI)
+Session = sessionmaker(bind=engine)
+
+
+class Client(object):
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+        self.user_id = 0
+        self.dbs = Session()
+
+    def check_user(self):
+        user = self.dbs.query(models.Users).filter_by(username=self.username, is_deleted=False).first()
+        if user and user.verify_password(self.password):
+            self.user_id = user.id
+            return True
+        return False
+
+    def ld(self):
+        todos = self.dbs.query(models.ToDoList).filter_by(owner_id=self.user_id, is_deleted=0, is_done=1).all()
+        return todos
+
+    def lu(self):
+        todos = self.dbs.query(models.ToDoList).filter_by(owner_id=self.user_id, is_deleted=False, is_done=False).all()
+        return todos
+
+    def ls(self):
+        todos = self.dbs.query(models.ToDoList).filter_by(owner_id=self.user_id, is_deleted=False).all()
+        return todos
+
+    def la(self):
+        todos = self.dbs.query(models.ToDoList).filter_by(owner_id=self.user_id).all()
+        return todos
+
+    def add(self, todo):
+        todo = models.ToDoList(content=todo, owner_id=self.user_id, updated_time=datetime.now())
+        self.dbs.add(todo)
+        self.dbs.commit()
+
+    def edit(self, num, todo_text):
+        try:
+            todo = self.dbs.query(models.ToDoList).filter_by(id=num, owner_id=self.user_id).first()
+            todo.content = todo_text
+            self.dbs.commit()
+        except Exception as e:
+            print '请输入正确的序号'
+
+    def done(self, num):
+        try:
+            todo = self.dbs.query(models.ToDoList).filter_by(id=num, owner_id=self.user_id).first()
+            todo.is_done = True
+            self.dbs.commit()
+        except Exception as e:
+            print '请输入正确的序号'
+
+    def undone(self, num):
+        try:
+            todo = self.dbs.query(models.ToDoList).filter_by(id=num, owner_id=self.user_id).first()
+            todo.is_done = False
+            self.dbs.commit()
+        except Exception as e:
+            print '请输入正确的序号'
+
+    def remove(self, num):
+        try:
+            todo = self.dbs.query(models.ToDoList).filter_by(id=num, owner_id=self.user_id).first()
+            todo.is_deleted = True
+            self.dbs.commit()
+        except Exception as e:
+            print '请输入正确的序号'
+
+    def search(self, search_tag):
+        todos = self.dbs.query(models.ToDoList).filter_by(owner_id=self.user_id, is_deleted=0).filter(
+            models.ToDoList.content.like('%' + search_tag + '%')).all()
+        return todos

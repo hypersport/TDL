@@ -10,7 +10,7 @@ if not os.path.isdir(CONFIG_PATH):
     os.makedirs(CONFIG_PATH)
 
 if not os.path.isfile(CONFIG_PATH + '/README'):
-    DESCRIPTION = r'''第一个启动应用时会创建 $HOME/.tdl/ 目录，该目录包括三个文件:
+    DESCRIPTION = r'''第一次启动应用时会创建 $HOME/.tdl/ 目录，该目录包括三个文件:
 - README 是说明文件
 - tdl.json 是应用的选择配置文件
     ```

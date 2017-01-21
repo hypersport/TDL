@@ -7,7 +7,6 @@ from flask_bootstrap import Bootstrap
 
 reload(sys)
 sys.setdefaultencoding("utf8")
-
 main = Blueprint('main', __name__, template_folder='templates')
 db = SQLAlchemy()
 bootstrap = Bootstrap()
@@ -17,3 +16,4 @@ login_manager.login_view = 'main.login'
 login_manager.login_message = '请登录账号'
 
 from . import tdl_server
+from . import tdl_client

@@ -21,14 +21,16 @@ TDL — ToDoList 使用 Python Flask 框架开发的一个中文版待做事项�
 - flask_wtf
 - wtforms
 - werkzeug
+- sqlalchemy
+- colorama (可选)
 
 （本来不想使用太多的 Python 扩展包，不过这些扩展真的挺好用的。另外在安装这些扩展的同时需要安装相应的依赖包，建议使用 pip 安装。）
 
 #### 运行及配置
 
-通过 python run_tdl.py 启动应用，web 页面访问 [http://localhost:9468](http://localhost:9468)。
+通过 `python run_tdl.py` 启动应用，web 页面访问 [http://localhost:9468](http://localhost:9468)。
 
-第一个启动应用时会创建 $HOME/.tdl/ 目录，该目录包括三个文件:
+第一次启动应用时会创建 $HOME/.tdl/ 目录，该目录包括三个文件:
 - README 是说明文件
 - tdl.json 是应用的选择配置文件
     ```
@@ -41,4 +43,25 @@ TDL — ToDoList 使用 Python Flask 框架开发的一个中文版待做事项�
     - 修改 config_type 的值，默认的 default 为 development ，还可选择 production ;
     - 修改 host 的值;
     - 修改端口 port 的值
-- tdl.db 是应用的 SQLite 数据库文件。
+- tdl.db 是应用的 SQLite 数据库文件，初始数据:
+    - 用户名: admin
+    - 密码: admin
+    
+#### 命令行使用说明
+
+- 命令行执行: `python tdl.py -u username -p password` 进入交互环境, 输入 'q' 退出
+- 命令行执行: `python tdl.py -h` 查看帮助
+- 可用命令:
+
+    ```
+    ls  --list all valid todos;
+    la  --list all todos;
+    ld  --list done todos;
+    lu  --list undone todos;
+    find tag  --search todo;
+    rm n  --remove nth todo;
+    do n  --mark nth todo as done;
+    ud n  --mark nth todo as undone;
+    add todo  --add a todo;
+    ed n todo  --edit nth todo.
+    ```
