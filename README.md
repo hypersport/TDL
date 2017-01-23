@@ -66,6 +66,7 @@ TDL — ToDoList 使用 Python Flask 框架开发的一个中文版待做事项�
     ed n todo   --edit nth todo;
     users       --list all users (only administrator can do this);
     au          --add user (only administrator can do this);
-    du n        --delete nth user (only administrator can do this)
+    du n        --delete nth user (only administrator can do this);
+    perm n      --change user's permission (only administrator can do this)
     ```
 - 命令行操作是直接对 $HOME/.tdl/tdl.db 数据库进行操作，不需要启动服务端
