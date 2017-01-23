@@ -125,9 +125,9 @@ def all_users():
 @main.route('/deluser', methods=['POST', 'GET'])
 @login_required
 def del_user():
-    if not current_user.is_administrator:
-        abort(403)
     user_id = request.args.get('user_id', 0)
+    if not current_user.is_administrator or user_id == 1:
+        abort(403)
     user = Users.query.get_or_404(user_id)
     user.is_deleted = False if user.is_deleted else True
     return ''

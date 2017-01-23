@@ -27,7 +27,8 @@ COMMAND = r'''
     ed n todo   --edit nth todo;
     users       --list all users (only administrator can do this);
     au          --add user (only administrator can do this);
-    du n        --delete nth user (only administrator can do this)'''
+    du n        --delete nth user (only administrator can do this);
+    perm n       --change user's permission (only administrator can do this)'''
 
 
 def check_input():
@@ -106,6 +107,8 @@ def tdl_operation():
                 print Fore.RED + '密码不一致' + Fore.RESET
         elif command[:2] == 'du' and command[3:].isdigit():
             tdl.del_user(command[3:])
+        elif command[:4] == 'perm' and command[5:].isdigit():
+            tdl.ch_perm(command[5:])
         else:
             print Fore.RED + '无效的命令' + Fore.RESET
         command = raw_input('>')

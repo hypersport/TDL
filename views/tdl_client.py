@@ -119,10 +119,22 @@ class Client(object):
         user = self.dbs.query(models.Users).get(self.user_id)
         if user.is_administrator:
             del_user = self.dbs.query(models.Users).filter_by(id=num, is_deleted=False).first()
-            if del_user:
+            if del_user and del_user.id != 1:
                 del_user.is_deleted = True
                 self.dbs.commit()
             else:
-                print '用户不存在或已删除'
+                print Fore.RED + '用户不存在或已删除' + Fore.RESET
+        else:
+            print Fore.RED + '无权限' + Fore.RESET
+
+    def ch_perm(self, num):
+        user = self.dbs.query(models.Users).get(self.user_id)
+        if user.is_administrator:
+            ch_perm_user = self.dbs.query(models.Users).filter_by(id=num, is_deleted=False).first()
+            if ch_perm_user and ch_perm_user.id != 1:
+                ch_perm_user.is_administrator = False if ch_perm_user.is_administrator else True
+                self.dbs.commit()
+            else:
+                print Fore.RED + '用户不存在' + Fore.RESET
         else:
             print Fore.RED + '无权限' + Fore.RESET
