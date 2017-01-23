@@ -24,7 +24,10 @@ COMMAND = r'''
     do n        --mark nth todo as done;
     ud n        --mark nth todo as undone;
     add todo    --add a todo;
-    ed n todo   --edit nth todo.'''
+    ed n todo   --edit nth todo;
+    users       --list all users (only administrator can do this);
+    au          --add user (only administrator can do this);
+    du n        --delete nth user (only administrator can do this)'''
 
 
 def check_input():
@@ -63,16 +66,16 @@ def tdl_operation():
     command = raw_input('>')
     while command != 'q' and command != 'quit' and command != 'exit':
         command = ' '.join(command.split())
-        if command == 'ls':
+        if len(command) == 2 and command == 'ls':
             todos = tdl.ls()
             display(todos)
-        elif command == 'la':
+        elif len(command) == 2 and command == 'la':
             todos = tdl.la()
             display(todos)
-        elif command == 'ld':
+        elif len(command) == 2 and command == 'ld':
             todos = tdl.ld()
             display(todos)
-        elif command == 'lu':
+        elif len(command) == 2 and command == 'lu':
             todos = tdl.lu()
             display(todos)
         elif command[:4] == 'find':
@@ -89,6 +92,20 @@ def tdl_operation():
             tdl.edit(command.split()[1], content.strip('\''))
         elif command[:3] == 'add':
             tdl.add(command[4:].strip('\''))
+        elif len(command) == 5 and command == 'users':
+            users = tdl.users()
+            for user in users:
+                print user.id, '|', user.username, '| 管理员' if user.is_administrator else '| 非管理员', Fore.RED + '| 已删除' + Fore.RESET if user.is_deleted else ''
+        elif len(command) == 2 and command == 'au':
+            username = raw_input('username:')
+            password = raw_input('password:')
+            password2 = raw_input('confirm password:')
+            if password == password2:
+                tdl.add_user(username, password)
+            else:
+                print Fore.RED + '密码不一致' + Fore.RESET
+        elif command[:2] == 'du' and command[3:].isdigit():
+            tdl.del_user(command[3:])
         else:
             print Fore.RED + '无效的命令' + Fore.RESET
         command = raw_input('>')

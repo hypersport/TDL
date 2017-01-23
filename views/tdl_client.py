@@ -93,3 +93,36 @@ class Client(object):
         todos = self.dbs.query(models.ToDoList).filter_by(owner_id=self.user_id, is_deleted=0).filter(
             models.ToDoList.content.like('%' + search_tag + '%')).all()
         return todos
+
+    def users(self):
+        user = self.dbs.query(models.Users).get(self.user_id)
+        if user.is_administrator:
+            users = self.dbs.query(models.Users).all()
+            return users
+        else:
+            print Fore.RED + '无权限' + Fore.RESET
+
+    def add_user(self, username, password):
+        user = self.dbs.query(models.Users).get(self.user_id)
+        if user.is_administrator:
+            add_user = self.dbs.query(models.Users).filter_by(username=username).first()
+            if not add_user:
+                add_user = models.Users(username=username, password=password)
+                self.dbs.add(add_user)
+                self.dbs.commit()
+            else:
+                print '用户名已存在'
+        else:
+            print Fore.RED + '无权限' + Fore.RESET
+
+    def del_user(self, num):
+        user = self.dbs.query(models.Users).get(self.user_id)
+        if user.is_administrator:
+            del_user = self.dbs.query(models.Users).filter_by(id=num, is_deleted=False).first()
+            if del_user:
+                del_user.is_deleted = True
+                self.dbs.commit()
+            else:
+                print '用户不存在或已删除'
+        else:
+            print Fore.RED + '无权限' + Fore.RESET
