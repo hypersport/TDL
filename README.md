@@ -70,3 +70,21 @@ TDL — ToDoList 使用 Python Flask 框架开发的一个中文版待做事项�
     perm n      --change user's permission (only administrator can do this)
     ```
 - 命令行操作是直接对 $HOME/.tdl/tdl.db 数据库进行操作，不需要启动服务端
+
+#### 运行截图
+
+- WEB 页面
+
+	1.登录 ![登录](./static/screenshots/login.png)
+
+	2.首页 ![首页](./static/screenshots/index.png)
+
+	3.添加修改待做事项 ![添加修改待做事项](./static/screenshots/add_chg_todo.png)
+
+	4.添加用户 ![添加用户](./static/screenshots/add_user.png)
+
+	5.修改个人信息 ![修改个人信息](./static/screenshots/change_info.png)
+
+	6.用户管理 ![用户管理](./static/screenshots/user_manage.png)
+
+- 命令行 ![命令行](./static/screenshots/client.png)
