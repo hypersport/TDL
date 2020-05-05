@@ -24,8 +24,6 @@ TDL — ToDoList 使用 Python Flask 框架开发的一个中文版待做事项�
 - sqlalchemy
 - colorama (可选)
 
-（本来不想使用太多的 Python 扩展包，不过这些扩展真的挺好用的。另外在安装这些扩展的同时需要安装相应的依赖包，建议使用 pip 安装。）
-
 #### 运行及配置
 
 通过 `python run_tdl.py` 启动应用，web 页面访问 [http://localhost:9468](http://localhost:9468)。
