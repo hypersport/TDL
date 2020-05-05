@@ -71,6 +71,8 @@ TDL — ToDoList 使用 Python Flask 框架开发的一个中文版待做事项�
 
 #### 运行截图
 
+- 命令行 ![命令行](./static/screenshots/client.png)
+
 - WEB 页面
 
 	1.登录 ![登录](./static/screenshots/login.png)
@@ -84,5 +86,3 @@ TDL — ToDoList 使用 Python Flask 框架开发的一个中文版待做事项�
 	5.修改个人信息 ![修改个人信息](./static/screenshots/change_info.png)
 
 	6.用户管理 ![用户管理](./static/screenshots/user_manage.png)
-
-- 命令行 ![命令行](./static/screenshots/client.png)
