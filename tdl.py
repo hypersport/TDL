@@ -1,10 +1,9 @@
-# coding=utf-8
 from views import tdl_client
 import sys
 
 try:
     from colorama import Fore
-except ImportError as e:
+except ImportError:
     class Fore(object):
         GREEN = ''
         RED = ''
@@ -42,29 +41,29 @@ def check_input():
             if tdl.check_user():
                 return tdl
             else:
-                print '用户名或密码错误'
+                print('用户名或密码错误')
                 exit()
         else:
-            print USAGE
+            print(USAGE)
     else:
-        print USAGE
+        print(USAGE)
     exit()
 
 
 def display(todos):
     for todo in todos:
         if todo.is_done:
-            print Fore.GREEN + '{} | {} | {} | 已完成'.format(todo.id, todo.content,
-                                                           todo.updated_time.strftime('%y-%m-%d %H:%M')) + Fore.RESET
+            print(Fore.GREEN + '{} | {} | {} | 已完成'.format(todo.id, todo.content,
+                                                           todo.updated_time.strftime('%y-%m-%d %H:%M')) + Fore.RESET)
         else:
-            print Fore.RED + '{} | {} | {} | 未完成'.format(todo.id, todo.content,
-                                                         todo.updated_time.strftime('%y-%m-%d %H:%M')) + Fore.RESET
+            print(Fore.RED + '{} | {} | {} | 未完成'.format(todo.id, todo.content,
+                                                         todo.updated_time.strftime('%y-%m-%d %H:%M')) + Fore.RESET)
 
 
 def tdl_operation():
     tdl = check_input()
-    print COMMAND
-    command = raw_input('>')
+    print(COMMAND)
+    command = input('>')
     while command != 'q' and command != 'quit' and command != 'exit':
         command = ' '.join(command.split())
         if len(command) == 2 and command == 'ls':
@@ -96,22 +95,23 @@ def tdl_operation():
         elif len(command) == 5 and command == 'users':
             users = tdl.users()
             for user in users:
-                print user.id, '|', user.username, '| 管理员' if user.is_administrator else '| 非管理员', Fore.RED + '| 已删除' + Fore.RESET if user.is_deleted else ''
+                print(user.id, '|', user.username, '| 管理员' if user.is_administrator else '| 非管理员',
+                      Fore.RED + '| 已删除' + Fore.RESET if user.is_deleted else '')
         elif len(command) == 2 and command == 'au':
-            username = raw_input('username:')
-            password = raw_input('password:')
-            password2 = raw_input('confirm password:')
+            username = input('username:')
+            password = input('password:')
+            password2 = input('confirm password:')
             if password == password2:
                 tdl.add_user(username, password)
             else:
-                print Fore.RED + '密码不一致' + Fore.RESET
+                print(Fore.RED + '密码不一致' + Fore.RESET)
         elif command[:2] == 'du' and command[3:].isdigit():
             tdl.del_user(command[3:])
         elif command[:4] == 'perm' and command[5:].isdigit():
             tdl.ch_perm(command[5:])
         else:
-            print Fore.RED + '无效的命令' + Fore.RESET
-        command = raw_input('>')
+            print(Fore.RED + '无效的命令' + Fore.RESET)
+        command = input('>')
 
 
 if __name__ == '__main__':

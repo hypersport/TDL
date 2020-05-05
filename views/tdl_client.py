@@ -1,4 +1,3 @@
-# coding=utf-8
 from . import models
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -63,7 +62,7 @@ class Client(object):
             todo.content = todo_text
             self.dbs.commit()
         else:
-            print Fore.RED + '无效的命令' + Fore.RESET
+            print(Fore.RED + '无效的命令' + Fore.RESET)
 
     def done(self, num):
         todo = self.dbs.query(models.ToDoList).filter_by(id=num, owner_id=self.user_id).first()
@@ -71,7 +70,7 @@ class Client(object):
             todo.is_done = True
             self.dbs.commit()
         else:
-            print Fore.RED + '无效的命令' + Fore.RESET
+            print(Fore.RED + '无效的命令' + Fore.RESET)
 
     def undone(self, num):
         todo = self.dbs.query(models.ToDoList).filter_by(id=num, owner_id=self.user_id).first()
@@ -79,7 +78,7 @@ class Client(object):
             todo.is_done = False
             self.dbs.commit()
         else:
-            print Fore.RED + '无效的命令' + Fore.RESET
+            print(Fore.RED + '无效的命令' + Fore.RESET)
 
     def remove(self, num):
         todo = self.dbs.query(models.ToDoList).filter_by(id=num, owner_id=self.user_id).first()
@@ -87,7 +86,7 @@ class Client(object):
             todo.is_deleted = True
             self.dbs.commit()
         else:
-            print Fore.RED + '无效的命令' + Fore.RESET
+            print(Fore.RED + '无效的命令' + Fore.RESET)
 
     def search(self, search_tag):
         todos = self.dbs.query(models.ToDoList).filter_by(owner_id=self.user_id, is_deleted=0).filter(
@@ -100,7 +99,7 @@ class Client(object):
             users = self.dbs.query(models.Users).all()
             return users
         else:
-            print Fore.RED + '无权限' + Fore.RESET
+            print(Fore.RED + '无权限' + Fore.RESET)
 
     def add_user(self, username, password):
         user = self.dbs.query(models.Users).get(self.user_id)
@@ -111,9 +110,9 @@ class Client(object):
                 self.dbs.add(add_user)
                 self.dbs.commit()
             else:
-                print '用户名已存在'
+                print('用户名已存在')
         else:
-            print Fore.RED + '无权限' + Fore.RESET
+            print(Fore.RED + '无权限' + Fore.RESET)
 
     def del_user(self, num):
         user = self.dbs.query(models.Users).get(self.user_id)
@@ -123,9 +122,9 @@ class Client(object):
                 del_user.is_deleted = True
                 self.dbs.commit()
             else:
-                print Fore.RED + '用户不存在或已删除' + Fore.RESET
+                print(Fore.RED + '用户不存在或已删除' + Fore.RESET)
         else:
-            print Fore.RED + '无权限' + Fore.RESET
+            print(Fore.RED + '无权限' + Fore.RESET)
 
     def ch_perm(self, num):
         user = self.dbs.query(models.Users).get(self.user_id)
@@ -135,6 +134,6 @@ class Client(object):
                 ch_perm_user.is_administrator = False if ch_perm_user.is_administrator else True
                 self.dbs.commit()
             else:
-                print Fore.RED + '用户不存在' + Fore.RESET
+                print(Fore.RED + '用户不存在' + Fore.RESET)
         else:
-            print Fore.RED + '无权限' + Fore.RESET
+            print(Fore.RED + '无权限' + Fore.RESET)
